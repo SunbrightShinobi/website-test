@@ -210,4 +210,4 @@ async function handleRequest(request) {
   } else {
     return new Response('Not found', { status: 404 });
   }
-}
+}`;
