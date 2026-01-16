@@ -157,8 +157,6 @@ form button:hover {
   text-align: center;
 }`;
 
-const IMAGE1_B64 = `iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==`; // Placeholder 1x1 pixel
-const IMAGE2_B64 = `iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==`; // Placeholder 1x1 pixel
 
 const APP_JS = `// Load gallery images on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -257,8 +255,10 @@ async function handleRequest(request) {
       headers: { 'Content-Type': 'application/javascript' },
     });
   } else if (url.pathname === '/api/images' && request.method === 'GET') {
-    // Return list of available images
-    return new Response(JSON.stringify(['1768527457911.jpg', '1768527486680.jpg']), {
+    // Return list of available images from R2
+    const list = await IMAGES.list();
+    const images = list.objects.map(obj => obj.key);
+    return new Response(JSON.stringify(images), {
       headers: { 'Content-Type': 'application/json' },
     });
   } else if (url.pathname === '/api/upload' && request.method === 'POST') {
@@ -268,16 +268,16 @@ async function handleRequest(request) {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
-  } else if (url.pathname === '/images/1768527457911.jpg') {
-    return new Response(atob(IMAGE1_B64), {
-      headers: { 'Content-Type': 'image/jpeg' },
-    });
-  } else if (url.pathname === '/images/1768527486680.jpg') {
-    return new Response(atob(IMAGE2_B64), {
-      headers: { 'Content-Type': 'image/jpeg' },
-    });
   } else if (url.pathname.startsWith('/images/')) {
-    return new Response('Image not found', { status: 404 });
+    const key = url.pathname.slice(8); // remove /images/
+    const object = await IMAGES.get(key);
+    if (object) {
+      return new Response(object.body, {
+        headers: { 'Content-Type': object.httpMetadata.contentType || 'image/jpeg' },
+      });
+    } else {
+      return new Response('Image not found', { status: 404 });
+    }
   } else {
     return new Response('Not found', { status: 404 });
   }
