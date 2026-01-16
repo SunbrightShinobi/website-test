@@ -254,9 +254,8 @@ async function handleRequest(request) {
       headers: { 'Content-Type': 'application/javascript' },
     });
   } else if (url.pathname === '/api/images' && request.method === 'GET') {
-    // In a real deployment, you would fetch from R2 or KV
-    // For now, return an empty array
-    return new Response(JSON.stringify([]), {
+    // Return list of available images
+    return new Response(JSON.stringify(['1768527457911.jpg', '1768527486680.jpg']), {
       headers: { 'Content-Type': 'application/json' },
     });
   } else if (url.pathname === '/api/upload' && request.method === 'POST') {
@@ -266,8 +265,15 @@ async function handleRequest(request) {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
+  } else if (url.pathname === '/images/1768527457911.jpg') {
+    return new Response(atob(IMAGE1_B64), {
+      headers: { 'Content-Type': 'image/jpeg' },
+    });
+  } else if (url.pathname === '/images/1768527486680.jpg') {
+    return new Response(atob(IMAGE2_B64), {
+      headers: { 'Content-Type': 'image/jpeg' },
+    });
   } else if (url.pathname.startsWith('/images/')) {
-    // For now, return 404 for images
     return new Response('Image not found', { status: 404 });
   } else {
     return new Response('Not found', { status: 404 });
