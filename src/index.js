@@ -157,6 +157,9 @@ form button:hover {
   text-align: center;
 }`;
 
+const IMAGE1_B64 = `iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==`; // Placeholder 1x1 pixel
+const IMAGE2_B64 = `iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==`; // Placeholder 1x1 pixel
+
 const APP_JS = `// Load gallery images on page load
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('gallery')) {
